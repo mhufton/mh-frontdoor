@@ -32,4 +32,9 @@ export class UserService {
 
     return foundUser;
   }
+
+  async findAllUsers(): Promise<User[]> {
+    const foundUsers = await this.userRepository.findAll();
+    return foundUsers;
+  }
 }

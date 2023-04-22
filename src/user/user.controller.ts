@@ -24,4 +24,10 @@ export class UserController {
     const foundUser = await this.userService.findUserByUsername(username);
     return { data: foundUser };
   }
+
+  @Get()
+  async findAllUsers() {
+    const foundUsers = await this.userService.findAllUsers();
+    return { data: foundUsers };
+  }
 }

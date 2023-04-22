@@ -18,7 +18,7 @@ export class User {
   @Prop({ default: Date.now })
   dateCreated: Date;
 
-  @Prop({ type: [String] })
+  @Prop()
   summary: string[];
 }
 

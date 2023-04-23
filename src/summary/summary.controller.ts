@@ -1,5 +1,5 @@
 // eslint-disable-next-line prettier/prettier
-import { Controller, Get, Post, Body, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete, Put } from '@nestjs/common';
 import { SummaryService } from './summary.service';
 import { CreateSummaryDto } from './dto/create-summary.dto';
 
@@ -36,5 +36,18 @@ export class SummaryController {
   @Delete(':id')
   async deleteSummary(@Param('id') id: string) {
     return this.summaryService.deleteSummary(id);
+  }
+
+  @Put(':id')
+  async updateSummary(
+    @Param('id') id: string,
+    @Body() body: { newTags: string[] },
+  ) {
+    const { newTags } = body;
+    const updatedSummary = await this.summaryService.updateSummaryById(
+      id,
+      newTags,
+    );
+    return updatedSummary;
   }
 }

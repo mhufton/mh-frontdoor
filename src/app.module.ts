@@ -5,7 +5,6 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UserModule } from './user/user.module';
 import { SummaryModule } from './summary/summary.module';
-import { OpenAiController } from './OpenAi/OpenAi.controller';
 
 @Module({
   imports: [
@@ -13,7 +12,7 @@ import { OpenAiController } from './OpenAi/OpenAi.controller';
     UserModule,
     SummaryModule,
   ],
-  controllers: [AppController, OpenAiController],
+  controllers: [AppController],
   providers: [AppService],
 })
 export class AppModule {}

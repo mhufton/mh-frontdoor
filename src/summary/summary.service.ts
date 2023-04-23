@@ -12,7 +12,7 @@ export class SummaryService {
 
   async create(
     text: string,
-    createSummerDto: CreateSummaryDto,
+    createSummaryDto: CreateSummaryDto,
   ): Promise<Summary> {
     console.log('SUMMARY', text);
     let newSummary: string;
@@ -41,7 +41,7 @@ export class SummaryService {
       console.log('SUMMARRRRYYYY', newSummary);
       const summaryToCreate = await this.summariesRepository.createSummary({
         summary: newSummary,
-        ...createSummerDto,
+        ...createSummaryDto,
       });
       console.log('SUMMARY TO CREATE', summaryToCreate);
       return summaryToCreate;
@@ -50,6 +50,37 @@ export class SummaryService {
       throw error;
     }
   }
+
+  // async createTags(text: string): Promise<string[]> {
+  //   const headers = {
+  //     'Content-Type': 'application/json',
+  //     Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
+  //   };
+  //   const data = {
+  //     model: 'davinci',
+  //     prompt: `create up to three metadata tags for this text: ${text}`,
+  //     temperature: 1,
+  //     max_tokens: 5,
+  //     top_p: 1,
+  //     frequency_penalty: 0,
+  //     presence_penalty: 0,
+  //   };
+  //   try {
+  //     const response = await axios.post(
+  //       'https://api.openai.com/v1/completions',
+  //       data,
+  //       { headers },
+  //     );
+  //     const newTags = response.data.choices[0].text
+  //       .replace(/\n/g, '')
+  //       .split(',');
+  //     console.log('tags inside createTags', newTags);
+  //     return newTags;
+  //   } catch (error) {
+  //     console.error(error);
+  //     throw error;
+  //   }
+  // }
 
   async findSummaryById(id: string): Promise<Summary> {
     const foundSummary = await this.summariesRepository.findSummaryById({ id });
@@ -80,5 +111,14 @@ export class SummaryService {
 
   async deleteSummary(id: string) {
     return `This action removes a #${id} summary`;
+  }
+
+  async updateSummaryById(id: string, newTags: string[]): Promise<Summary> {
+    const foundSummary = await this.findSummaryById(id);
+    const updatedSummary = await this.summariesRepository.updateSummaryById(
+      foundSummary,
+      newTags,
+    );
+    return updatedSummary;
   }
 }

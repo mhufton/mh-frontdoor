@@ -33,4 +33,13 @@ export class SummariesRepository {
   ): Promise<Summary> {
     return this.summary.findOneAndDelete(summaryQuery).exec();
   }
+
+  async updateSummaryById(
+    summaryQuery: FilterQuery<Summary>,
+    newTags: string[],
+  ): Promise<SummaryDocument | null> {
+    return this.summary
+      .findOneAndUpdate(summaryQuery, { tags: newTags })
+      .exec();
+  }
 }

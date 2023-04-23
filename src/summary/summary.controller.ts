@@ -8,8 +8,11 @@ export class SummaryController {
   constructor(private readonly summaryService: SummaryService) {}
 
   @Post()
-  async create(@Body() createSummaryDto: CreateSummaryDto) {
-    const newSummary = await this.summaryService.create(createSummaryDto);
+  async create(
+    @Body() body: { text: string; createSummaryDto: CreateSummaryDto },
+  ) {
+    const { text, createSummaryDto } = body;
+    const newSummary = await this.summaryService.create(text, createSummaryDto);
     return newSummary;
   }
 

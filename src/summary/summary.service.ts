@@ -4,16 +4,51 @@ import { UpdateSummaryDto } from './dto/update-summary.dto';
 import { SummariesRepository } from './summary.repository';
 import { Summary } from './schema/summary.schema';
 import { FilterQuery, Model } from 'mongoose';
+import axios from 'axios';
 
 @Injectable()
 export class SummaryService {
   constructor(private readonly summariesRepository: SummariesRepository) {}
 
-  async create(createSummaryDto: CreateSummaryDto) {
-    const summaryToCreate = await this.summariesRepository.createSummary(
-      createSummaryDto,
-    );
-    return summaryToCreate;
+  async create(
+    text: string,
+    createSummerDto: CreateSummaryDto,
+  ): Promise<Summary> {
+    console.log('SUMMARY', text);
+    let newSummary: string;
+    const headers = {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
+    };
+    const data = {
+      model: 'text-davinci-002',
+      prompt: `Summarize the following text: ${text}`,
+      temperature: 1,
+      max_tokens: 200,
+      top_p: 1,
+      frequency_penalty: 0,
+      presence_penalty: 0,
+    };
+    console.log('DATA', data);
+    try {
+      const response = await axios.post(
+        'https://api.openai.com/v1/completions',
+        data,
+        { headers },
+      );
+      console.log('RESPONSE', response.data);
+      newSummary = response.data.choices[0].text.replace(/\n/g, '');
+      console.log('SUMMARRRRYYYY', newSummary);
+      const summaryToCreate = await this.summariesRepository.createSummary({
+        summary: newSummary,
+        ...createSummerDto,
+      });
+      console.log('SUMMARY TO CREATE', summaryToCreate);
+      return summaryToCreate;
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
   }
 
   async findSummaryById(id: string): Promise<Summary> {
